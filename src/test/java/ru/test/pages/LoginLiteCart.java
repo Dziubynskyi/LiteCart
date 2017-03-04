@@ -24,6 +24,8 @@ public class LoginLiteCart extends Page {
     @FindBy( xpath = "//h1")
     public WebElement Teg;
 
+    @FindBy(xpath = "//*[@id='logotype-wrapper']/a/img")
+    public WebElement Web;
 
 
 
@@ -52,8 +54,13 @@ public class LoginLiteCart extends Page {
        waitUntilIsLoadedCustomTime(IsOnManePageButton,40);
     }
 
-    public boolean ElementIsPresent(){
+    public boolean ElementIsPresent() {
         return exists(Teg);
     }
+
+    public void WaitWebSiteLoaded() {
+        waitUntilIsLoaded(Web);
+    }
 }
+
 
