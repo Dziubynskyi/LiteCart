@@ -3,15 +3,20 @@ package ru.test.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.test.TestBase;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 /**
  * Created by Comp on 2/28/2017.
@@ -50,7 +55,7 @@ public class TestAll extends TestBase {
         //Узнаем размер листа
         for (int i = 0; i < Element.size(); i++) {
             Element = driver.findElements(By.cssSelector("li#app-"));
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); это тут нужно. Выключил мешает внизу. Работает с вкл
             Element.get(i).click();
             //Нажиммаем ну каждый элемент в листе
             loginLiteCart.ElementIsPresent();
@@ -137,7 +142,7 @@ public class TestAll extends TestBase {
         Assert.assertTrue(loginLiteCart.IsOnLiteCartPage());
         driver.findElement(By.linkText("Geo Zones")).click();
         driver.findElement(By.cssSelector("td:nth-child(3) > a")).click();
-        List<WebElement> ZonesOfCanada = driver.findElements(By.cssSelector("td:nth-child(3) > select > option[selected]"));// локатор который выбирает только выбранные значения в выпадающем списке
+        List<WebElement> ZonesOfCanada = driver.findElements(By.cssSelector("td:nth-child(3) > select > option[selected]"));// локатор который выбирает только выбранное значения (одно) в выпадающем списке
         List<String> CanadaZonesNames = new ArrayList<String>();
         List<String> sortedCanadaZonesNames = new ArrayList<String>();
 
@@ -178,8 +183,100 @@ public class TestAll extends TestBase {
             System.out.println(ZonesOfUnitetStates.get(i));
         }
     }
-}
 
+    @Test
+    public void CreateNewUser() {
+        String email = "Dziybynskyi+1294@gmail.com";
+        String password = "3254632546";
+
+        driver.navigate().to("http://localhost/litecart/en/");
+        loginLiteCart.WaitWebSiteLoaded();
+        driver.findElement(By.cssSelector("tr:nth-child(5) > td > a")).click();
+        driver.findElement(By.name("tax_id")).sendKeys("336542097");
+        driver.findElement(By.name("company")).sendKeys("black rock");
+        driver.findElement(By.name("firstname")).sendKeys("Yuriy");
+        driver.findElement(By.name("lastname")).sendKeys("Barsky");
+        driver.findElement(By.name("address1")).sendKeys("Dror 56");
+        driver.findElement(By.name("postcode")).sendKeys("76485");
+        driver.findElement(By.name("city")).sendKeys("Tel-Aviv");
+        WebElement elementCountry = driver.findElement(By.cssSelector("td:nth-child(1) > select"));// локатор для дробдаун всегда СЕЛЕКТ
+        selectValueInDropdownbyText(elementCountry, "United States");
+        WebElement elementZone = driver.findElement(By.cssSelector("td:nth-child(2) > select"));// локатор для дробдаун всегда СЕЛЕКТ
+
+        WebElement element = wait.until(presenceOfElementLocated(By.cssSelector("td:nth-child(2) > select")));
+
+        selectValueInDropdownbyText(element, "Georgia");
+        driver.findElement(By.name("email")).sendKeys(email);
+        driver.findElement(By.name("phone")).sendKeys("+10974767847");
+        driver.findElement(By.name("password")).sendKeys(password);
+        driver.findElement(By.name("confirmed_password")).sendKeys(password);
+        driver.findElement(By.cssSelector("td > button")).click();
+
+        wait.until(ExpectedConditions.stalenessOf(element));// явное ожидание пока элемент исчезнет
+
+
+        driver.findElement(By.cssSelector("li:nth-child(4) > a")).click();
+        driver.findElement(By.name("email")).sendKeys(email);
+        driver.findElement(By.name("password")).sendKeys(password);
+        driver.findElement(By.name("login")).click();
+        driver.findElement(By.cssSelector("li:nth-child(4) > a")).click();
+
+    }
+
+
+    @Test
+    public void AddNewProduct() {
+        String PathTofile = "dog.jpg";
+        File PathTest = new File(PathTofile);
+        String AbsolutePath = PathTest.getAbsolutePath();
+        System.out.println(AbsolutePath);
+
+        driver.get("http://localhost/litecart/admin/login.php");
+        loginLiteCart.SelectLogin("admin");
+        loginLiteCart.SelectPassword("admin");
+        loginLiteCart.PressLoginButton();
+        driver.get("http://localhost/litecart/admin/?app=catalog&doc=catalog");
+        driver.findElement(By.cssSelector("#content > div:nth-child(2) > a:nth-child(2)")).click();
+        driver.findElement(By.name("name[en]")).sendKeys("BobDuck");
+        driver.findElement(By.name("code")).sendKeys("34256");
+        driver.findElement(By.cssSelector("tr:nth-child(10) > td > input[type='date']")).sendKeys("12032017");
+        driver.findElement(By.cssSelector("tr:nth-child(11) > td > input[type='date']")).sendKeys("30032017");
+        driver.findElement(By.cssSelector("td > input[type='file']")).sendKeys(AbsolutePath);// type='file' в локаторе позволяет выбрать картинку нужную
+        driver.findElement(By.cssSelector("#content > form > div > ul > li:nth-child(2) > a")).click();
+        wait.until(presenceOfElementLocated(By.cssSelector("div.trumbowyg-editor")));
+        driver.findElement(By.cssSelector("div.trumbowyg-editor")).sendKeys("It is best dog!");
+
+        By tabPrices = By.xpath("//a[contains(text(), 'Prices')]"); // такой вид записи локаторов через By
+        driver.findElement(tabPrices).click();
+
+        WebDriverWait waitNew = new WebDriverWait(driver, 5);
+        waitNew.until(ExpectedConditions.visibilityOfElementLocated(By.className("content")));
+
+        WebElement priceField = driver.findElement(By.cssSelector("#tab-prices > table:nth-child(2) > tbody > tr > td > input[type='number']"));
+        setElementText(priceField, "19.90");
+        driver.findElement(By.name("save")).click();
+        wait.until(presenceOfElementLocated(By.cssSelector("td:nth-child(3) > a")));
+
+    }
+
+    public void setElementText(WebElement element, String text) {
+        element.click();
+        element.clear();
+        //Log.info("entering text '" + text + "' into element " + element);
+        element.sendKeys(text);
+        // Assert.assertEquals(element.getAttribute("value"), text);
+    }
+
+    public void selectValueInDropdownbyText(WebElement dropdown, String value) {
+        Select select = new Select(dropdown);
+        select.selectByVisibleText(value);
+    }
+
+    public void selectValueInDropdownbyIndex(WebElement dropdown, int index) {
+        Select select = new Select(dropdown);
+        select.deselectByIndex(index);
+    }
+}
 
 
 
