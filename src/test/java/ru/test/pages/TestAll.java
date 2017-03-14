@@ -225,7 +225,7 @@ public class TestAll extends TestBase {
 
 
     @Test
-    public void AddNewProduct() {
+    public void AddNewProduct() { // нуже новый путь на картинку
         String PathTofile = "dog.jpg";
         File PathTest = new File(PathTofile);
         String AbsolutePath = PathTest.getAbsolutePath();
@@ -260,7 +260,7 @@ public class TestAll extends TestBase {
     }
 
     @Test
-    public void AddProductToCart() {
+    public void AddProductToCart() throws InterruptedException {
         driver.navigate().to("http://localhost/litecart/en/");
         driver.findElement(By.cssSelector("#box-most-popular > div > ul > li:nth-child(1) > a.link")).click();
         if (true == IsElementDrobDownPresent()) { // условие проверяет что если нам попалась утка с дробдаун  нужно выбарть значение small в ней (утки хаотично попадаются не увсех есть дробдауны)
@@ -319,12 +319,12 @@ public class TestAll extends TestBase {
         WebElement PriseB2 = driver.findElement(By.cssSelector("td:nth-child(2) > strong"));
         String PriseBefore2 = PriseB2.getText();
         driver.findElement(By.name("remove_cart_item")).click();
-        wait.until(driver -> !driver.findElement(By.cssSelector("td:nth-child(2) > strong")).getText().equals(PriseBefore2));
-
+        //wait.until(driver -> !driver.findElement(By.cssSelector("td:nth-child(2) > strong")).getText().equals(PriseBefore2));
+        Thread.sleep(1000);
         WebElement element = driver.findElement(By.cssSelector("td:nth-child(2) > strong"));
         driver.findElement(By.name("remove_cart_item")).click();
-        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#checkout-cart-wrapper > p:nth-child(2) > a")));
-        //Thread.sleep(1000);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#checkout-cart-wrapper > p:nth-child(2) > a")));
+
     }
     public void setElementText(WebElement element, String text) {
         element.click();
