@@ -1,6 +1,7 @@
 package ru.test.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -159,7 +160,7 @@ public class TestAll extends TestBase {
         }
         driver.navigate().back();
         driver.findElement(By.cssSelector("tr:nth-child(3) > td:nth-child(3) > a")).click();
-        List<WebElement> ZonesOfUnitetStites = driver.findElements(By.cssSelector("td:nth-child(3) > select > option[selected]"));// локатор который выбирает только выбранные значения в выпадающем списке
+        List<WebElement> ZonesOfUnitetStites = driver.findElements(By.cssSelector("td:nth-child(3) > select > option[selected]"));// локатор который выбирает только выбранное значения в выпадающем списке
 
         List<String> ZonesOfUnitetStates = new ArrayList<String>();
         List<String> sortedZonesOfUnitetStites = new ArrayList<String>();
@@ -183,7 +184,6 @@ public class TestAll extends TestBase {
             System.out.println(ZonesOfUnitetStates.get(i));
         }
     }
-
     @Test
     public void CreateNewUser() {
         String email = "Dziybynskyi+1294@gmail.com";
@@ -259,6 +259,73 @@ public class TestAll extends TestBase {
 
     }
 
+    @Test
+    public void AddProductToCart() throws InterruptedException {
+        driver.navigate().to("http://localhost/litecart/en/");
+        driver.findElement(By.cssSelector("#box-most-popular > div > ul > li:nth-child(1) > a.link")).click();
+        if (true == IsElementDrobDownPresent()) { // условие проверяет что если нам попалась утка с дробдаун  нужно выбарть значение small в ней (утки хаотично попадаются не увсех есть дробдауны)
+            WebElement DrobDown = driver.findElement(By.cssSelector("tr:nth-child(1) > td > select"));
+            selectValueInDropdownbyText(DrobDown, "Small");
+            WebElement QuantityB = driver.findElement(By.cssSelector("#cart > a.content > span.quantity"));
+            String QuantityBefore = QuantityB.getText();
+            driver.findElement(By.name("add_cart_product")).click();
+            wait.until(driver -> !driver.findElement(By.cssSelector("#cart > a.content > span.quantity")).getText().equals(QuantityBefore));
+        } else {
+            WebElement QuantityB = driver.findElement(By.cssSelector("#cart > a.content > span.quantity"));
+            String QuantityBefore = QuantityB.getText();
+            driver.findElement(By.name("add_cart_product")).click();
+            wait.until(driver -> !driver.findElement(By.cssSelector("#cart > a.content > span.quantity")).getText().equals(QuantityBefore));
+        }
+        driver.navigate().back();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h3[contains(text(), 'Most Popular')]")));
+        driver.findElement(By.cssSelector("#box-most-popular > div > ul > li:nth-child(2) > a.link")).click();
+        if (true == IsElementDrobDownPresent()) {
+            WebElement DrobDown = driver.findElement(By.cssSelector("tr:nth-child(1) > td > select"));
+            selectValueInDropdownbyText(DrobDown, "Small");
+            WebElement QuantityB = driver.findElement(By.cssSelector("#cart > a.content > span.quantity"));
+            String QuantityBefore = QuantityB.getText();
+            driver.findElement(By.name("add_cart_product")).click();
+            wait.until(driver -> !driver.findElement(By.cssSelector("#cart > a.content > span.quantity")).getText().equals(QuantityBefore));
+        } else {
+            WebElement QuantityB = driver.findElement(By.cssSelector("#cart > a.content > span.quantity"));
+            String QuantityBefore = QuantityB.getText();
+            driver.findElement(By.name("add_cart_product")).click();
+            wait.until(driver -> !driver.findElement(By.cssSelector("#cart > a.content > span.quantity")).getText().equals(QuantityBefore));
+        }
+        driver.navigate().back();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h3[contains(text(), 'Most Popular')]")));
+        driver.findElement(By.cssSelector(" #box-most-popular > div > ul > li:nth-child(3) > a.link")).click();
+        if (true == IsElementDrobDownPresent()) {
+            WebElement DrobDown = driver.findElement(By.cssSelector("tr:nth-child(1) > td > select"));
+            selectValueInDropdownbyText(DrobDown, "Small");
+            WebElement QuantityB = driver.findElement(By.cssSelector("#cart > a.content > span.quantity"));
+            String QuantityBefore = QuantityB.getText();
+            driver.findElement(By.name("add_cart_product")).click();
+            wait.until(driver -> !driver.findElement(By.cssSelector("#cart > a.content > span.quantity")).getText().equals(QuantityBefore));
+        } else {
+            WebElement QuantityB = driver.findElement(By.cssSelector("#cart > a.content > span.quantity"));
+            String QuantityBefore = QuantityB.getText();
+            driver.findElement(By.name("add_cart_product")).click();
+            wait.until(driver -> !driver.findElement(By.cssSelector("#cart > a.content > span.quantity")).getText().equals(QuantityBefore));
+        }
+        driver.findElement(By.linkText("Checkout »")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[contains(text(), 'Customer Details')]")));
+
+        WebElement PriseB1 = driver.findElement(By.cssSelector("td:nth-child(2) > strong"));
+        String PriseBefore1 = PriseB1.getText();
+        driver.findElement(By.name("remove_cart_item")).click();
+        wait.until(driver -> !driver.findElement(By.cssSelector("td:nth-child(2) > strong")).getText().equals(PriseBefore1));
+
+        WebElement PriseB2 = driver.findElement(By.cssSelector("td:nth-child(2) > strong"));
+        String PriseBefore2 = PriseB2.getText();
+        driver.findElement(By.name("remove_cart_item")).click();
+        wait.until(driver -> !driver.findElement(By.cssSelector("td:nth-child(2) > strong")).getText().equals(PriseBefore2));
+
+        WebElement element = driver.findElement(By.cssSelector("td:nth-child(2) > strong"));
+        driver.findElement(By.name("remove_cart_item")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#checkout-cart-wrapper > p:nth-child(2) > a")));
+        //Thread.sleep(1000);
+    }
     public void setElementText(WebElement element, String text) {
         element.click();
         element.clear();
@@ -272,9 +339,24 @@ public class TestAll extends TestBase {
         select.selectByVisibleText(value);
     }
 
+    public boolean verifyElementIsPresent(WebElement element) {
+        try {
+            element.getTagName();
+            return true;
+        } catch (NoSuchElementException e) {
+            //  Log.info("---------------------------------");
+            //  Log.info("element " + element + " can not be found by  element.getTagName()");
+            //   Log.info("---------------------------------");
+            return false;
+        }
+    }
     public void selectValueInDropdownbyIndex(WebElement dropdown, int index) {
         Select select = new Select(dropdown);
         select.deselectByIndex(index);
+    }
+
+    public boolean IsElementDrobDownPresent() {
+        return driver.findElements(By.cssSelector("tr:nth-child(1) > td > select")).size() > 0;
     }
 }
 

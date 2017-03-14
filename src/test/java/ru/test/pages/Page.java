@@ -219,5 +219,20 @@ public abstract class Page {
     String cellColorAfterClick = Color.fromString(cell.getCssValue("background-color")).asHex();
     return !cellColorBeforeClick.equals(cellColorAfterClick);
   }
+
+  // проверка налиция элемента (полезно когда явные ожидания включены)
+  public boolean IsElementPresentOFBaranzev(By locator) {
+    return driver.findElements(locator).size() > 0;
+  }
+
+  // проверка отсутствия элемента (без ожидания) явные нужно отключить!
+  public boolean IsElementNotPresent(WebElement driver, By locator) {
+    try {
+      //driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+      return driver.findElements(locator).size() == 0;
+    } finally {
+      //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    }
+  }
 }
 
