@@ -260,7 +260,7 @@ public class TestAll extends TestBase {
     }
 
     @Test
-    public void AddProductToCart() throws InterruptedException {
+    public void AddProductToCart() {
         driver.navigate().to("http://localhost/litecart/en/");
         driver.findElement(By.cssSelector("#box-most-popular > div > ul > li:nth-child(1) > a.link")).click();
         if (true == IsElementDrobDownPresent()) { // условие проверяет что если нам попалась утка с дробдаун  нужно выбарть значение small в ней (утки хаотично попадаются не увсех есть дробдауны)
