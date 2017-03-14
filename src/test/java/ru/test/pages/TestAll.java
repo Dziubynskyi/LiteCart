@@ -323,7 +323,7 @@ public class TestAll extends TestBase {
 
         WebElement element = driver.findElement(By.cssSelector("td:nth-child(2) > strong"));
         driver.findElement(By.name("remove_cart_item")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#checkout-cart-wrapper > p:nth-child(2) > a")));
+        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#checkout-cart-wrapper > p:nth-child(2) > a")));
         //Thread.sleep(1000);
     }
     public void setElementText(WebElement element, String text) {
