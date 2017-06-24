@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
@@ -56,7 +57,7 @@ public class TestAll extends TestBase {
         //Узнаем размер листа
         for (int i = 0; i < Element.size(); i++) {
             Element = driver.findElements(By.cssSelector("li#app-"));
-            //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); это тут нужно. Выключил мешает внизу. Работает с вкл
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //это тут нужно. Выключил мешает внизу. Работает с вкл
             Element.get(i).click();
             //Нажиммаем ну каждый элемент в листе
             loginLiteCart.ElementIsPresent();
@@ -326,6 +327,8 @@ public class TestAll extends TestBase {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#checkout-cart-wrapper > p:nth-child(2) > a")));
 
     }
+
+
     public void setElementText(WebElement element, String text) {
         element.click();
         element.clear();
@@ -358,7 +361,9 @@ public class TestAll extends TestBase {
     public boolean IsElementDrobDownPresent() {
         return driver.findElements(By.cssSelector("tr:nth-child(1) > td > select")).size() > 0;
     }
+
 }
+
 
 
 

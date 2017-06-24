@@ -12,8 +12,6 @@ import ru.test.TestBase;
 import java.util.List;
 import java.util.Set;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-
 /**
  Задание 14. Проверьте, что ссылки открываются в новом окне
  Сделайте сценарий, который проверяет, что ссылки на странице редактирования страны открываются в новом окне.
@@ -57,7 +55,7 @@ public class SwitchWindowsInBrowser extends TestBase {
             linksList.get(i).click();
             String newWindow = wait.until((WebDriver driver) -> thereIsWindowOtherThan(oldWindows));// ждем пока индификтор появился и сохраняем его в переменную
             driver.switchTo().window(newWindow);
-            WebElement element = wait.until(presenceOfElementLocated(By.xpath("//h1")));
+            //  wait.until(presenceOfElementLocated(By.xpath("//h1")));
             driver.close();
             driver.switchTo().window(mainWindow);// переключаемся к старому окну (в котором и была ссылка которая открывает новое окно)
         }
